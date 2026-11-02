@@ -7,6 +7,13 @@
   <meta name="description" content="PatMirt: building MES for SMT lines with Hanwha Decan machines, Python and manufacturing automation." />
   <meta property="og:title" content="PatMirt" />
   <meta property="og:description" content="Building MES for SMT manufacturing · Hanwha Decan · Python" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://patmirt.github.io/" />
+  <meta property="og:image" content="https://patmirt.github.io/img/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="PatMirt: MES for SMT manufacturing, with a pixel angel" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#0d0b0c" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23d9b66a' d='M10.5 2h3v20h-3z'/><path fill='%23d9b66a' d='M6 14h12v3H6z'/></svg>" />
   <script>
@@ -20,7 +27,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Grenze+Gotisch:wght@500;600;700&family=Pixelify+Sans:wght@500;700&family=VT323&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Jacquard+24&family=VT323&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #0d0b0c;
@@ -36,12 +43,13 @@
       --gold-soft: rgba(184, 146, 74, 0.55);
       --shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.75);
       --grad: linear-gradient(120deg, #ffffff, #9d9991 45%, #ffffff 70%, #c9c5bd);
-      /* type: blackletter for names, inscription capitals for labels, book serif for reading, pixel for the relics */
-      --f-display: "Grenze Gotisch", "UnifrakturCook", serif;
-      --f-caps: "Cinzel", "Trajan Pro", Georgia, serif;
-      --f-body: "EB Garamond", Garamond, Georgia, serif;
-      --f-pixel: var(--f-pixel);
-      --f-term: "VT323", "Courier New", monospace;
+      /* type: two faces. Jacquard 24 (pixel blackletter) for names and titles, VT323 for everything you read */
+      --f-display: "Jacquard 24", "UnifrakturCook", serif;
+      --f-text: "VT323", "Courier New", monospace;
+      --f-caps: var(--f-text);
+      --f-body: var(--f-text);
+      --f-pixel: var(--f-text);
+      --f-term: var(--f-text);
       --mx: 50vw;
       --my: 30vh;
     }
@@ -53,13 +61,13 @@
       background-attachment: fixed;
       color: var(--text);
       font-family: var(--f-body);
-      font-size: 18px;
-      line-height: 1.6;
+      font-size: 22px;
+      line-height: 1.35;
       overflow-x: hidden;
     }
     a { color: inherit; text-decoration: none; }
-    .lat { font-family: var(--f-body); font-style: italic; }
-    .gothic { font-family: var(--f-display); font-weight: 600; }
+    .lat { font-family: var(--f-body); }
+    .gothic { font-family: var(--f-display); font-weight: 400; }
 
     /* ───── background: light from the windows ───── */
     .bg { position: fixed; inset: 0; z-index: -3; overflow: hidden; }
@@ -125,11 +133,25 @@
       border-bottom: 1px solid var(--border);
     }
     nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 62px; }
-    .logo { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 700; font-size: 27px; letter-spacing: .5px; }
+    .logo { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 400; font-size: 27px; letter-spacing: .5px; }
     .logo span { color: var(--accent-hi); }
     .logo svg { width: 20px; height: 24px; }
-    nav ul { display: flex; gap: 26px; list-style: none; font-size: 15px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+    nav ul { display: flex; gap: 26px; list-style: none; font-size: 19px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
     nav ul a:hover { color: var(--text); }
+    .menu-btn {
+      display: none; place-items: center; width: 42px; height: 42px; padding: 0; cursor: pointer;
+      border: 1px solid var(--border); border-radius: 8px; background: rgba(255, 255, 255, .03); color: var(--gold);
+    }
+    .menu-btn svg { width: 20px; height: 20px; shape-rendering: crispEdges; fill: currentColor; }
+    .menu-btn .cross { display: none; }
+    nav.open .menu-btn .bars { display: none; }
+    nav.open .menu-btn .cross { display: block; }
+    @keyframes menu-in { from { opacity: 0; transform: translateY(-6px); } }
+
+    /* keyboard focus: a gold ring everywhere */
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+    .card:focus-visible, .contact:focus-visible { outline-offset: 4px; border-radius: 18px; }
+    .book:focus-visible { outline-offset: 6px; }
 
     /* ───── hero ───── */
     .hero { position: relative; min-height: calc(100vh - 62px); display: flex; align-items: center; padding: 60px 0; }
@@ -165,27 +187,27 @@
     .tag {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 6px 16px; border: 1px solid var(--border); border-radius: 999px;
-      background: var(--card); backdrop-filter: blur(8px); font-size: 15px; color: var(--muted); letter-spacing: .06em;
+      background: var(--card); backdrop-filter: blur(8px); font-size: 18px; color: var(--muted); letter-spacing: .06em;
     }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-hi); animation: pulse 2s infinite; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--accent-hi); } 70%, 100% { box-shadow: 0 0 0 10px transparent; } }
-    h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(48px, 9vw, 96px); line-height: 1.02; margin: 10px 0 4px; letter-spacing: 1px; }
+    h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(48px, 9vw, 96px); line-height: 1.02; margin: 10px 0 4px; letter-spacing: 1px; }
     .gradient { background: var(--grad); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 8s linear infinite; }
     @keyframes shine { to { background-position: 200% center; } }
-    .kicker { display: flex; align-items: center; gap: 12px; margin-top: 22px; color: var(--gold); font-size: 14px; letter-spacing: .35em; text-transform: uppercase; }
+    .kicker { display: flex; align-items: center; gap: 12px; margin-top: 22px; color: var(--gold); font-size: 18px; letter-spacing: .25em; text-transform: uppercase; }
     .kicker::before, .kicker::after { content: ""; width: 42px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
     .kicker::after { background: linear-gradient(270deg, transparent, var(--gold)); }
-    h1 .h-small { display: block; font-family: var(--f-body); font-style: italic; font-size: .34em; letter-spacing: .04em; color: var(--muted); margin-bottom: .05em; }
+    h1 .h-small { display: block; font-family: var(--f-body); font-size: .3em; letter-spacing: .04em; color: var(--muted); margin-bottom: .05em; }
     h1 .gradient { filter: drop-shadow(0 0 22px rgba(217, 182, 106, .22)); }
     .flourish { display: block; width: min(320px, 80%); height: 20px; margin: 2px 0 18px; }
     .typing { font-family: var(--f-term); font-size: clamp(20px, 2.6vw, 26px); letter-spacing: .5px; color: var(--text); min-height: 1.4em; }
     .typing::before { content: "† "; color: var(--gold); }
     .lead .vn { font-style: normal; font-size: .62em; letter-spacing: .12em; color: var(--gold); vertical-align: super; margin-right: 8px; }
-    .relics { list-style: none; display: flex; flex-wrap: wrap; gap: 10px 26px; max-width: 520px; margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--muted); font-size: 16px; }
-    .relics b { font-family: var(--f-display); font-weight: 600; font-size: 21px; color: var(--gold); margin-right: 8px; letter-spacing: .5px; }
+    .relics { list-style: none; display: flex; flex-wrap: wrap; gap: 10px 26px; max-width: 520px; margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--muted); font-size: 20px; }
+    .relics b { font-family: var(--f-display); font-weight: 400; font-size: 21px; color: var(--gold); margin-right: 8px; letter-spacing: .5px; }
     .typing::after { content: "▌"; margin-left: 2px; animation: blink 1s steps(1) infinite; color: var(--gold); }
     @keyframes blink { 50% { opacity: 0; } }
-    .lead { color: var(--muted); font-style: italic; max-width: 520px; margin: 18px 0 30px; font-size: 21px; }
+    .lead { color: var(--muted); max-width: 520px; margin: 18px 0 30px; font-size: 24px; line-height: 1.3; }
     .btns { display: flex; flex-wrap: wrap; gap: 12px; }
     .btn {
       display: inline-flex; align-items: center; gap: 10px;
@@ -232,11 +254,11 @@
       box-shadow: inset 0 0 0 4px #000, inset 0 0 0 10px #1c1517, inset 0 0 0 14px var(--gilt), inset 0 0 0 18px #1c1517, inset 0 0 0 20px #6a5128;
     }
     .px-cross { width: 22%; height: auto; shape-rendering: crispEdges; }
-    .face.front .title { font-family: var(--f-pixel); font-weight: 700; color: var(--gilt); font-size: 5.6cqw; line-height: 1.05; letter-spacing: 3px; text-shadow: 2px 2px 0 #000; }
+    .face.front .title { font-family: var(--f-display); font-weight: 400; color: var(--gilt); font-size: 5.6cqw; line-height: 1.05; letter-spacing: 3px; text-shadow: 2px 2px 0 #000; }
     .face.front .sub { font-size: 2.6cqw; color: #8a7448; letter-spacing: 2px; text-transform: uppercase; }
     .run { font-family: var(--f-pixel); font-size: 2.5cqw; color: var(--rubric); text-align: center; letter-spacing: 1px; border-bottom: 2px solid var(--parch-2); padding-bottom: 4%; margin-bottom: 5%; }
     .cap { font-size: 3.5cqw; line-height: 1.05; margin-bottom: 5%; }
-    .drop { float: left; font-family: var(--f-pixel); font-weight: 700; font-size: 2.6em; line-height: .8; margin: 2px 4px 0 0; color: var(--gilt); text-shadow: 2px 2px 0 var(--ink); }
+    .drop { float: left; font-family: var(--f-display); font-weight: 400; font-size: 2.6em; line-height: .8; margin: 2px 4px 0 0; color: var(--gilt); text-shadow: 2px 2px 0 var(--ink); }
     .verses { list-style: none; counter-reset: v; font-size: 3.7cqw; line-height: 1.1; display: grid; gap: .25em; }
     .verses[start="6"] { counter-reset: v 5; }
     .verses li { counter-increment: v; padding-left: 1.4em; text-indent: -1.4em; overflow-wrap: break-word; }
@@ -251,8 +273,8 @@
     .book.open .cap { transition-delay: 1.4s; }
 
     nav ul, .eyebrow, .kicker, .btn, .contact small, .skip, .tag, footer { font-family: var(--f-caps); }
-    .btn { font-size: 14px; letter-spacing: .08em; }
-    .tag, footer { font-size: 13px; }
+    .btn { font-size: 20px; letter-spacing: .06em; }
+    .tag, footer { font-size: 18px; }
     /* ───── decoration between and behind sections ───── */
     .frieze {
       pointer-events: none; position: relative; height: 46px; display: grid; place-items: center;
@@ -270,7 +292,7 @@
     .head { position: relative; isolation: isolate; }
     .head::before {
       content: attr(data-num); position: absolute; right: 0; top: -.08em; z-index: -1; pointer-events: none;
-      font-family: var(--f-caps); font-weight: 400; font-size: clamp(84px, 12vw, 150px); line-height: 1; letter-spacing: .06em;
+      font-family: var(--f-display); font-weight: 400; font-size: clamp(90px, 13vw, 160px); line-height: 1; letter-spacing: .04em;
       background: linear-gradient(180deg, rgba(243, 226, 168, .22), rgba(217, 182, 106, .04));
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
@@ -283,9 +305,9 @@
     @keyframes flame-b { 50% { opacity: 1; } }
 
     section { padding: 90px 0; }
-    .eyebrow { font-size: 15px; letter-spacing: .3em; text-transform: uppercase; color: var(--accent-hi); }
-    .eyebrow .lat { color: var(--muted); margin-left: 10px; font-size: 13px; letter-spacing: .1em; text-transform: none; }
-    h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(34px, 5vw, 52px); letter-spacing: .5px; margin: 6px 0 12px; }
+    .eyebrow { font-size: 19px; letter-spacing: .24em; text-transform: uppercase; color: var(--accent-hi); }
+    .eyebrow .lat { color: var(--muted); margin-left: 10px; font-size: 17px; letter-spacing: .1em; text-transform: none; }
+    h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(34px, 5vw, 52px); letter-spacing: .5px; margin: 6px 0 12px; }
     .rule { color: var(--gold-soft); letter-spacing: .6em; font-size: 13px; margin-bottom: 32px; }
     .rule span { padding-bottom: 6px; }
 
@@ -303,13 +325,13 @@
     .card:hover { transform: translateY(-4px); border-color: var(--gold); box-shadow: var(--shadow); }
     .card .ic { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; margin-bottom: 14px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.06); }
     .card .ic svg { width: 24px; height: 24px; }
-    .card h3 { font-family: var(--f-display); font-weight: 600; font-size: 25px; letter-spacing: .5px; margin-bottom: 6px; }
-    .card h3 .lat { font-family: var(--f-body); font-size: 14px; font-weight: 500; color: var(--muted); margin-left: 8px; }
-    .card p { color: var(--muted); font-size: 18px; }
+    .card h3 { font-family: var(--f-display); font-weight: 400; font-size: 25px; letter-spacing: .5px; margin-bottom: 6px; }
+    .card h3 .lat { font-family: var(--f-body); font-size: 17px; font-weight: 500; color: var(--muted); margin-left: 8px; }
+    .card p { color: var(--muted); font-size: 21px; line-height: 1.3; }
     .card.feature { background: linear-gradient(140deg, rgba(255, 255, 255, 0.08), var(--card-solid)); }
     .card.feature::after {
       content: "✠"; position: absolute; right: 18px; bottom: -14px;
-      font-family: var(--f-body); font-weight: 700; font-size: 84px;
+      font-family: var(--f-display); font-weight: 400; font-size: 84px;
       color: var(--gold); opacity: .1; pointer-events: none;
     }
 
@@ -326,15 +348,15 @@
       border-radius: 68px 68px 14px 14px; background: var(--card-solid); padding: 48px 36px 36px;
       display: grid; grid-template-columns: 1.2fr 1fr; gap: 36px;
     }
-    .project h3 { font-family: var(--f-display); font-weight: 600; font-size: 34px; margin-bottom: 10px; }
+    .project h3 { font-family: var(--f-display); font-weight: 400; font-size: 34px; margin-bottom: 10px; }
     .project p { color: var(--muted); }
     .badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
     .badge { font-family: var(--f-term); font-size: 15px; font-weight: 400; padding: 4px 10px; border-radius: 4px; background: rgba(255, 255, 255, .06); color: var(--text); }
     .badge.g { background: rgba(255, 255, 255, 0.14); color: #e8e4dc; }
     .features { list-style: none; display: grid; gap: 14px; }
     .features li { display: flex; gap: 12px; align-items: flex-start; }
-    .features li b { display: block; font-weight: 600; font-size: 19px; }
-    .features li span { color: var(--muted); font-size: 16px; }
+    .features li b { display: block; font-family: var(--f-display); font-weight: 400; font-size: 24px; line-height: 1.1; }
+    .features li span { color: var(--muted); font-size: 19px; }
     .features .n {
       flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
       border: 1px solid var(--border); background: rgba(255, 255, 255, 0.06); color: #e2b878;
@@ -354,9 +376,9 @@
     .contact .logo-ic svg { width: 22px; height: 22px; fill: var(--gold); margin-top: 4px; transition: fill .25s; }
     .contact:hover .logo-ic { border-color: #d9b66a; box-shadow: inset 0 0 0 3px rgba(0, 0, 0, .35), inset 0 0 0 4px rgba(217, 182, 106, .35), 0 0 18px rgba(217, 182, 106, .25); }
     .contact:hover .logo-ic svg { fill: #f3e2a8; }
-    .contact small { color: var(--muted); display: block; font-size: 15px; letter-spacing: .06em; }
+    .contact small { color: var(--muted); display: block; font-size: 18px; letter-spacing: .06em; }
     .contact b { font-family: var(--f-term); font-size: 21px; font-weight: 400; word-break: break-all; }
-    .copied { color: var(--accent-hi); font-size: 14px; opacity: 0; transition: opacity .2s; }
+    .copied { color: var(--accent-hi); font-size: 17px; opacity: 0; transition: opacity .2s; }
     .copied.show { opacity: 1; }
 
     footer { padding: 40px 0 70px; text-align: center; color: var(--muted); font-size: 16px; letter-spacing: .06em; border-top: 1px solid var(--border); }
@@ -415,7 +437,12 @@
       75% { opacity: 1; transform: translateY(-6px) scale(1); }
       100% { opacity: 0; transform: translateY(-14px) scale(.9); }
     }
-    @media (max-width: 600px) { .mascot { width: 88px; height: 86px; } .bubble { max-width: 190px; font-size: 18px; } }
+    @media (max-width: 600px) { .mascot { width: 72px; height: 71px; } .bubble { max-width: 170px; font-size: 18px; } }
+    /* on narrow screens she peeks from the edge and steps out only to talk */
+    @media (max-width: 860px) {
+      .mascot { translate: -58% 0; opacity: .85; transition: translate .45s cubic-bezier(.3, .7, .3, 1), opacity .3s; }
+      .mascot.out, .mascot:focus-visible { translate: 0 0; opacity: 1; }
+    }
 
     /* ───── sound toggle ───── */
     .sound {
@@ -430,39 +457,74 @@
     .sound.on { color: #e2b878; border-color: var(--gold); }
     .sound.on .slash { display: none; }
 
-    /* ───── intro: fade into the church, the nun greets you ───── */
-    .gate { display: none; position: fixed; inset: 0; z-index: 90; overflow: hidden; background: #000; transition: opacity 1.4s ease; }
+    /* ───── intro: a visual-novel dialogue, PatMirt, the little devil, greets you ───── */
+    .gate { display: none; position: fixed; inset: 0; z-index: 90; overflow: hidden; background: #000; transition: opacity 1s ease; }
     .gate::after {
       content: ""; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse at 50% 45%, transparent 35%, rgba(0, 0, 0, .8) 100%);
+      background: radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(0, 0, 0, .85) 100%);
     }
     html.intro .gate { display: block; }
     .gate.leave { opacity: 0; pointer-events: none; }
     .scene-bg {
       position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%;
-      filter: grayscale(1) contrast(1.12); opacity: 0; transform: scale(1.14);
-      transition: opacity 2.2s ease, transform 9s cubic-bezier(.2, .6, .3, 1);
+      filter: grayscale(1) contrast(1.12); opacity: 0; transform: scale(1.08);
+      transition: opacity 1.2s ease, transform 12s cubic-bezier(.2, .6, .3, 1);
     }
-    .gate.open .scene-bg { opacity: .8; transform: scale(1); }
-    .nun-card {
-      position: absolute; left: 50%; bottom: 14vh; z-index: 4; height: min(50vh, 470px); aspect-ratio: 4 / 5;
-      transform: translateX(-50%) translateY(18px); opacity: 0; overflow: hidden;
-      border: 3px solid var(--gold); border-radius: 50% 50% 10px 10px / 34% 34% 10px 10px;
-      box-shadow: 0 0 0 6px rgba(0, 0, 0, .55), 0 0 60px rgba(217, 182, 106, .35); background: #fff;
-      transition: opacity 1.6s ease, transform 1.6s ease;
+    .gate.open .scene-bg { opacity: .75; transform: scale(1); }
+    .vn {
+      position: absolute; z-index: 4; left: 50%; bottom: 5vh; width: min(880px, calc(100% - 32px));
+      display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: start;
+      padding: 22px 26px 20px; cursor: pointer; user-select: none;
+      background: linear-gradient(180deg, rgba(14, 11, 12, .9), rgba(6, 5, 6, .94));
+      border: 2px solid var(--gold); border-radius: 6px;
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, .7), 0 0 0 5px var(--gold-soft), 0 20px 60px rgba(0, 0, 0, .7);
+      opacity: 0; translate: -50% 30px; transition: opacity .7s ease, translate .7s cubic-bezier(.2, .7, .3, 1);
     }
-    .nun-card img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
-    .gate.greeting .nun-card { opacity: 1; transform: translateX(-50%); }
-    .greet {
-      position: absolute; left: 0; right: 0; bottom: 6vh; text-align: center; z-index: 4;
-      font-family: var(--f-display); font-size: clamp(28px, 6vw, 52px); letter-spacing: 2px;
-      color: #ede8e0; text-shadow: 0 0 24px rgba(255, 255, 255, .45);
-      opacity: 0; transform: translateY(14px); transition: opacity 1.4s ease, transform 1.4s ease;
+    .gate.talk .vn { opacity: 1; translate: -50% 0; }
+    .gate.leave .vn { translate: -50% 40px; }
+    .vn::before, .vn::after { /* pixel studs in the corners */
+      content: ""; position: absolute; top: 6px; width: 6px; height: 6px; background: var(--gold);
     }
-    .gate.greeting .greet { opacity: 1; transform: none; }
+    .vn::before { left: 6px; }
+    .vn::after { right: 6px; }
+    .vn-face {
+      width: 128px; height: 128px; border: 2px solid var(--gold); border-radius: 4px; overflow: hidden; background: radial-gradient(circle at 50% 40%, #2b2326, #0c0a0b 75%);
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, .8);
+    }
+    .vn-face img { width: 100%; height: 100%; object-fit: cover; display: block; image-rendering: pixelated; transform: scale(1.9); transform-origin: 56% 40%; }
+    .vn-face.speak img { animation: speak .5s ease-in-out infinite alternate; }
+    @keyframes speak { to { translate: 0 1.5px; } }
+    .vn-name {
+      position: absolute; top: -20px; left: 172px; padding: 2px 16px 4px;
+      font-family: var(--f-display); font-size: 30px; line-height: 1; color: var(--gold);
+      background: #0b090a; border: 2px solid var(--gold); border-radius: 4px;
+    }
+    .vn-text { min-height: 4.2em; margin-top: 10px; font-size: 27px; line-height: 1.35; color: var(--text); }
+    .vn-text .caret { display: inline-block; width: .5em; color: var(--gold); animation: caret 1s ease-in-out infinite; }
+    @keyframes caret { 50% { opacity: .15; translate: 0 3px; } }
+    .vn-choices { display: none; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    .vn.ask .vn-choices { display: flex; }
+    .vn.ask .caret { display: none; }
+    .vn-choices button {
+      font: inherit; font-size: 22px; color: var(--text); cursor: pointer;
+      background: rgba(255, 255, 255, .03); border: 1px solid var(--border); border-radius: 4px; padding: 6px 16px;
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .vn-choices button::before { content: "\203A  "; color: var(--gold); }
+    .vn-choices button:hover, .vn-choices button:focus-visible { border-color: var(--gold); color: #fff; background: rgba(184, 146, 74, .12); }
+    .vn-hint { position: absolute; right: 18px; bottom: 6px; font-size: 16px; letter-spacing: .14em; text-transform: uppercase; color: #6f6865; }
+    .vn.ask .vn-hint { display: none; }
+    @media (max-width: 600px) {
+      .vn { grid-template-columns: 1fr; padding: 18px 16px 26px; bottom: 16px; }
+      .vn-face { position: absolute; width: 84px; height: 84px; top: -100px; left: 10px; }
+      .vn-name { left: 104px; top: -18px; font-size: 26px; }
+      .vn-text { font-size: 23px; min-height: 5.4em; }
+      .vn-choices button { flex: 1 1 100%; text-align: left; }
+      .vn-hint { display: none; }
+    }
     .skip {
       position: absolute; right: 22px; top: 22px; z-index: 5;
-      font: inherit; font-size: 15px; letter-spacing: .2em; text-transform: uppercase; color: #9a928f;
+      font: inherit; font-size: 19px; letter-spacing: .14em; text-transform: uppercase; color: #9a928f;
       background: rgba(5, 3, 4, .55); border: 1px solid var(--border); border-radius: 999px; padding: 8px 18px; cursor: pointer;
     }
     .skip:hover { color: var(--text); border-color: var(--gold); }
@@ -484,6 +546,14 @@
       .hero-inner, .project-inner { grid-template-columns: 1fr; }
       .cards, .contacts { grid-template-columns: 1fr; }
       nav ul { display: none; }
+      .menu-btn { display: grid; }
+      nav.open ul {
+        display: flex; flex-direction: column; gap: 0; position: absolute; top: 100%; left: 0; right: 0;
+        padding: 6px 20px 14px; background: rgba(13, 11, 12, .97); border-bottom: 1px solid var(--border);
+        font-size: 24px; animation: menu-in .25s ease-out;
+      }
+      nav.open ul li + li { border-top: 1px solid rgba(217, 182, 106, .12); }
+      nav.open ul a { display: block; padding: 12px 4px; }
       .project-inner { padding: 40px 22px 24px; }
       section { padding: 64px 0; }
       .rose { opacity: .3; }
@@ -538,8 +608,18 @@
   <!-- intro: a visual-novel scene inside the church -->
   <div class="gate" id="gate" aria-hidden="true">
     <img class="scene-bg" src="img/church.jpg" alt="" />
-    <figure class="nun-card"><img src="img/nun.jpg" alt="" /></figure>
-    <div class="greet">Welcome, wanderer</div>
+    <div class="vn" id="vn" role="dialog" aria-label="Greeting">
+      <div class="vn-face" id="vn-face"><img src="img/demon.jpg" alt="" /></div>
+      <div class="vn-name">Lil' Pat</div>
+      <div class="vn-body">
+        <p class="vn-text" id="vn-text" aria-live="polite"></p>
+        <div class="vn-choices" id="vn-choices">
+          <button type="button" data-go="enter">Enter the chapel</button>
+          <button type="button" data-go="who">Who are you?</button>
+        </div>
+      </div>
+      <span class="vn-hint">click &#9662;</span>
+    </div>
     <button class="skip" id="skip" type="button">Skip</button>
   </div>
 
@@ -564,11 +644,14 @@
   <nav>
     <div class="wrap">
       <a href="#" class="logo"><svg><use href="#icross" /></svg><b>Pat<span>Mirt</span></b></a>
-      <ul>
+      <ul id="menu">
         <li><a href="#about">Nave</a></li>
         <li><a href="#project">Altar</a></li>
         <li><a href="#contacts">Confession</a></li>
       </ul>
+      <button class="menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+        <svg viewBox="0 0 9 9" aria-hidden="true"><path class="bars" d="M0 1h9v1H0zM0 4h9v1H0zM0 7h9v1H0z" /><path class="cross" d="M4 0h1v9H4zM1 5h7v1H1z" /></svg>
+      </button>
     </div>
   </nav>
 
@@ -613,7 +696,7 @@
       </div>
 
       <figure class="book-wrap reveal">
-        <div class="book" id="book" title="Click to close or open the book">
+        <div class="book" id="book" title="Click to close or open the book" role="button" tabindex="0" aria-label="Scripture book with a code sample, press to open or close">
           <div class="page right">
             <div class="run">Decan S2 · L1-M2</div>
             <ol class="verses" start="6">
@@ -879,6 +962,20 @@
       addEventListener("pointerdown", () => { if (soundBtn.classList.contains("on")) startHum(); }, { once: true });
     }
 
+    // ───── phone menu ─────
+    (function () {
+      const nav = document.querySelector("nav"), mbtn = document.getElementById("menu-btn");
+      const set = (open) => {
+        nav.classList.toggle("open", open);
+        mbtn.setAttribute("aria-expanded", open);
+        mbtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      };
+      mbtn.addEventListener("click", () => set(!nav.classList.contains("open")));
+      document.querySelectorAll("#menu a").forEach((a) => a.addEventListener("click", () => set(false)));
+      addEventListener("keydown", (e) => { if (e.key === "Escape" && nav.classList.contains("open")) { set(false); mbtn.focus(); } });
+      document.addEventListener("click", (e) => { if (!nav.contains(e.target)) set(false); });
+    })();
+
     // ───── open the scripture book once the hero is in view ─────
     (function () {
       const book = document.getElementById("book");
@@ -891,6 +988,7 @@
         if (entries[0].isIntersecting) { open(); obs.disconnect(); }
       }, { threshold: 0.4 }).observe(book);
       book.addEventListener("click", () => book.classList.toggle("open"));
+      book.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); book.click(); } });
     })();
 
     // ───── mascot: pixel angel, talks when clicked ─────
@@ -909,9 +1007,9 @@
       let i = 0, hideT;
       window.mascotSay = function (text, ms = 3600) {
         bubble.textContent = text;
-        bubble.classList.add("show");
+        bubble.classList.add("show"); btn.classList.add("out");
         clearTimeout(hideT);
-        hideT = setTimeout(() => bubble.classList.remove("show"), ms);
+        hideT = setTimeout(() => { bubble.classList.remove("show"); btn.classList.remove("out"); }, ms);
       };
       // pixel emotions above her head, 12×12 sprites
       const EPAL = { K: "#120c0c", R: "#c0283a", W: "#ffffff", G: "#d9b66a", Y: "#fff1b8" };
@@ -1059,29 +1157,85 @@
       if (!document.documentElement.classList.contains("intro")) setTimeout(() => mascotSay("Welcome back, wanderer."), 1200);
     })();
 
-    // ───── intro: opening the church gates ─────
+    // ───── intro: a visual-novel greeting from PatMirt, the little devil ─────
     (function () {
       const root = document.documentElement;
       const gate = document.getElementById("gate");
       if (!root.classList.contains("intro")) return;
-      let done = false;
+      const vn = document.getElementById("vn"), out = document.getElementById("vn-text"), face = document.getElementById("vn-face");
+      const lines = [
+        "...Oh. So the doors were left open after all.",
+        "Don't look at me like that. I only came in to get warm.",
+        "The candles are still burning. Perhaps someone was waiting for you.",
+        "Well then, wanderer. Will you come in?",
+      ];
+      let i = -1, typing = null, full = "", done = false, afterLast = null;
+
+      function blip() {
+        if (!soundBtn.classList.contains("on") || !ctx) return;
+        const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "square"; o.frequency.value = 520 + Math.random() * 80;
+        g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+        o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.06);
+      }
+      function type(text, onDone) {
+        full = text; out.textContent = ""; face.classList.add("speak");
+        let n = 0;
+        typing = setInterval(() => {
+          n++; out.textContent = text.slice(0, n);
+          if (n % 3 === 1 && text[n - 1] !== " ") blip();
+          if (n >= text.length) finish();
+        }, 32);
+        afterLast = onDone || null;
+      }
+      function finish() {
+        clearInterval(typing); typing = null; face.classList.remove("speak");
+        out.textContent = full;
+        const c = document.createElement("span"); c.className = "caret"; c.textContent = "\u25BE"; out.appendChild(c);
+        if (afterLast) { const f = afterLast; afterLast = null; f(); }
+      }
+      function next() {
+        if (done || vn.classList.contains("ask")) return;
+        if (typing) return finish();
+        i++;
+        if (i < lines.length - 1) type(lines[i]);
+        else if (i === lines.length - 1) type(lines[i], () => { vn.classList.add("ask"); vn.querySelector("[data-go]").focus(); });
+        else leave();
+      }
       function leave() {
         if (done) return; done = true;
+        clearInterval(typing);
         gate.classList.add("leave");
         try { sessionStorage.setItem("gate", "1"); } catch (e) {}
         setTimeout(() => {
           gate.remove(); root.classList.remove("intro", "locked");
           setTimeout(() => window.mascotSay && mascotSay("Hi! Click me if you get lost."), 600);
-        }, 1000);
+        }, 900);
       }
+
+      vn.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-go]");
+        if (b) {
+          e.stopPropagation();
+          vn.classList.remove("ask");
+          if (b.dataset.go === "enter") return leave();
+          i = lines.length; // the next click after this line leaves
+          return type("Me? PatMirt, but everyone calls me Lil' Pat. Just a little devil who keeps the candles lit in here. Don't tell the priest. ...Go on, before they burn out.");
+        }
+        next();
+      });
+      addEventListener("keydown", (e) => {
+        if (done) return;
+        if (e.key === "Escape") return leave();
+        if ((e.key === "Enter" || e.key === " ") && !e.target.closest("[data-go]")) { e.preventDefault(); next(); }
+      });
+      document.getElementById("skip").addEventListener("click", leave);
+
       setTimeout(() => {
         gate.classList.add("open");
         if (soundBtn.classList.contains("on") && ctx) bell();
-      }, 300);
-      setTimeout(() => gate.classList.add("greeting"), 2000);
-      setTimeout(leave, 6800);
-      document.getElementById("skip").addEventListener("click", leave);
-      addEventListener("keydown", (e) => { if (e.key === "Escape") leave(); });
+      }, 200);
+      setTimeout(() => { gate.classList.add("talk"); setTimeout(next, 500); }, 900);
     })();
   </script>
 </body>
