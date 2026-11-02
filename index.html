@@ -381,6 +381,44 @@
     .copied { color: var(--accent-hi); font-size: 17px; opacity: 0; transition: opacity .2s; }
     .copied.show { opacity: 1; }
 
+    /* ───── icons: black-and-white panels under a golden nimbus ───── */
+    .icons { display: flex; flex-wrap: wrap; justify-content: center; gap: 56px 30px; padding-top: 34px; }
+    .icon { flex: 0 1 220px; position: relative; padding: 0; border: 0; background: none; cursor: zoom-in; color: inherit; font: inherit; }
+    .icon::before {
+      content: ""; position: absolute; left: 50%; top: -30px; width: 150%; aspect-ratio: 1; transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(243, 197, 101, .34), rgba(217, 182, 106, .1) 38%, transparent 62%);
+      pointer-events: none; opacity: .7; transition: opacity .5s ease;
+    }
+    .icon-frame {
+      position: relative; display: block; aspect-ratio: 3 / 4; border: 2px solid var(--gold); border-radius: 999px 999px 10px 10px;
+      overflow: hidden; background: #0b090a; box-shadow: 0 0 0 5px #0b090a, 0 0 0 6px var(--gold-soft), var(--shadow);
+      transition: transform .5s ease, box-shadow .5s ease;
+    }
+    .icon-frame::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(180deg, rgba(0, 0, 0, .15), transparent 30%, rgba(0, 0, 0, .45));
+    }
+    .icon img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; display: block; filter: grayscale(1) contrast(1.08) brightness(.92); transition: filter .5s ease, transform .8s ease; }
+    .icon:hover::before, .icon:focus-visible::before { opacity: 1; }
+    .icon:hover .icon-frame, .icon:focus-visible .icon-frame { transform: translateY(-5px); box-shadow: 0 0 0 5px #0b090a, 0 0 0 6px var(--gold), 0 0 34px rgba(243, 197, 101, .28), var(--shadow); }
+    .icon:hover img, .icon:focus-visible img { filter: grayscale(1) contrast(1.12) brightness(1.02); transform: scale(1.03); }
+    .icon .halo {
+      position: absolute; left: 50%; top: -14px; width: 74%; height: 34px; transform: translateX(-50%); z-index: 2; pointer-events: none;
+      border: 2px solid #f3c565; border-radius: 50%; box-shadow: 0 0 14px rgba(243, 197, 101, .7), inset 0 0 8px rgba(243, 197, 101, .45);
+    }
+    /* the iconostasis stays sealed until the little devil sleeps and every candle is out */
+    html:not(.icons-open) #icons, html:not(.icons-open) .icons-frieze { display: none; }
+    html:not(.icons-open) #menu a[href="#icons"] { opacity: .45; }
+    html:not(.icons-open) #menu a[href="#icons"]::after { content: " 0"; }
+    .px-candle[role="button"], .chandelier { cursor: pointer; }
+    .px-candle.out .f1, .px-candle.out .f2, .chandelier.out .f1, .chandelier.out .f2 { animation: none; opacity: 0; }
+    .chandelier.out svg { filter: none; }
+    .chandelier.out::after { opacity: 0; }
+    .mascot.asleep img { filter: brightness(.5) saturate(.6); transition: filter 1.2s ease; }
+    .lightbox { position: fixed; inset: 0; z-index: 120; display: none; place-items: center; background: rgba(5, 4, 5, .93); cursor: zoom-out; padding: 20px; }
+    .lightbox.open { display: grid; animation: menu-in .25s ease-out; }
+    .lightbox img { max-width: min(92vw, 760px); max-height: 90vh; border: 2px solid var(--gold); border-radius: 6px; box-shadow: 0 0 0 5px #0b090a, 0 0 0 6px var(--gold-soft), 0 0 60px rgba(243, 197, 101, .2); filter: grayscale(1) contrast(1.08); }
+
     footer { padding: 40px 0 70px; text-align: center; color: var(--muted); font-size: 16px; letter-spacing: .06em; border-top: 1px solid var(--border); }
     footer .cross { color: var(--accent-hi); }
 
@@ -647,6 +685,7 @@
       <ul id="menu">
         <li><a href="#about">Nave</a></li>
         <li><a href="#project">Altar</a></li>
+        <li><a href="#icons">Icons</a></li>
         <li><a href="#contacts">Confession</a></li>
       </ul>
       <button class="menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
@@ -807,9 +846,33 @@
     <svg class="rose-mini" viewBox="-30 -30 60 60"><circle r="27" class="ground" /><g class="spin"><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(0)" /><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(45)" /><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(90)" /><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(135)" /><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(180)" /><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(225)" /><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(270)" /><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(315)" /></g><circle r="27" fill="none" /><circle r="21" fill="none" /><circle r="4" /></svg>
   </div></div>
 
-  <section id="contacts">
+  <section id="icons">
     <div class="wrap">
       <div class="reveal head" data-num="III">
+        <div class="eyebrow">Iconostasis<span class="lat">Imagines</span></div>
+        <h2>My Hysteria</h2>
+        <div class="rule"><span>◆ ◇ ◆ ◇ ◆</span></div>
+      </div>
+      <div class="icons">
+        <button class="icon reveal" type="button" aria-label="Open icon 1"><span class="icon-frame"><img src="img/icon-1.jpg" alt="Icon 1" /></span><i class="halo"></i></button>
+        <button class="icon reveal" type="button" aria-label="Open icon 2"><span class="icon-frame"><img src="img/icon-2.jpg" alt="Icon 2" /></span><i class="halo"></i></button>
+        <button class="icon reveal" type="button" aria-label="Open icon 3"><span class="icon-frame"><img src="img/icon-3.jpg" alt="Icon 3" /></span><i class="halo"></i></button>
+        <button class="icon reveal" type="button" aria-label="Open icon 4"><span class="icon-frame"><img src="img/icon-4.jpg" alt="Icon 4" /></span><i class="halo"></i></button>
+        <button class="icon reveal" type="button" aria-label="Open icon 5"><span class="icon-frame"><img src="img/icon-5.jpg" alt="Icon 5" /></span><i class="halo"></i></button>
+        <button class="icon reveal" type="button" aria-label="Open icon 6"><span class="icon-frame"><img src="img/icon-6.jpg" alt="Icon 6" /></span><i class="halo"></i></button>
+        <button class="icon reveal" type="button" aria-label="Open icon 7"><span class="icon-frame"><img src="img/icon-7.jpg" alt="Icon 7" /></span><i class="halo"></i></button>
+      </div>
+    </div>
+  </section>
+  <div class="lightbox" id="lightbox" role="dialog" aria-label="Icon"><img id="lightbox-img" alt="" /></div>
+
+  <div class="wrap icons-frieze"><div class="frieze" aria-hidden="true">
+    <svg class="rose-mini" viewBox="-30 -30 60 60"><circle r="27" class="ground" /><g class="spin"><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(0)" /><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(90)" /><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(180)" /><ellipse cx="0" cy="-12" rx="4" ry="9" transform="rotate(270)" /></g><circle r="27" fill="none" /><circle r="21" fill="none" /><circle r="4" /></svg>
+  </div></div>
+
+  <section id="contacts">
+    <div class="wrap">
+      <div class="reveal head" data-num="IV">
         <div class="eyebrow">Confession<span class="lat">Confiteor</span></div>
         <h2>Let's keep in touch</h2>
         <div class="rule"><svg class="px-candle" viewBox="0 0 7 17" style="width:18px;height:44px;--d:0.65s;--dl:-0.3s" aria-hidden="true"><g class="f1"><path d="M3 0h1v1H3z" fill="#f3c565" /><path d="M2 1h3v2H2z" fill="#f3c565" /><path d="M3 2h1v1H3z" fill="#ffffff" /></g><g class="f2"><path d="M3 1h1v1H3z" fill="#f3c565" /><path d="M2 2h3v1H2z" fill="#f3c565" /><path d="M3 2h1v1H3z" fill="#ffffff" /></g><path d="M2 4h3v9H2z" fill="#ece7dc" /><path d="M4 4h1v9H4z" fill="#bdb6a8" /><path d="M2 5h1v2H2z" fill="#ffffff" /><path d="M2 9h1v3H2z" fill="#ffffff" /><path d="M3 3h1v1H3z" fill="#2a2420" /><path d="M1 13h5v1H1z" fill="#d9b66a" /><path d="M3 14h1v2H3z" fill="#8a6a2c" /><path d="M1 16h5v1H1z" fill="#d9b66a" /></svg><span>◆ ◇ ◆ ◇ ◆</span><svg class="px-candle" viewBox="0 0 7 12" style="width:18px;height:31px;--d:0.75s;--dl:-0.5s" aria-hidden="true"><g class="f1"><path d="M3 0h1v1H3z" fill="#f3c565" /><path d="M2 1h3v2H2z" fill="#f3c565" /><path d="M3 2h1v1H3z" fill="#ffffff" /></g><g class="f2"><path d="M3 1h1v1H3z" fill="#f3c565" /><path d="M2 2h3v1H2z" fill="#f3c565" /><path d="M3 2h1v1H3z" fill="#ffffff" /></g><path d="M2 4h3v6H2z" fill="#ece7dc" /><path d="M4 4h1v6H4z" fill="#bdb6a8" /><path d="M1 4h5v1H1z" fill="#ece7dc" /><path d="M1 5h1v1H1z" fill="#ece7dc" /><path d="M5 5h1v2H5z" fill="#bdb6a8" /><path d="M2 6h1v2H2z" fill="#ffffff" /><path d="M5 5h1v3H5z" fill="#ece7dc" /><path d="M3 3h1v1H3z" fill="#2a2420" /><path d="M0 10h7v1H0z" fill="#d9b66a" /><path d="M1 11h5v1H1z" fill="#8a6a2c" /></svg></div>
@@ -962,6 +1025,17 @@
       addEventListener("pointerdown", () => { if (soundBtn.classList.contains("on")) startHum(); }, { once: true });
     }
 
+    // ───── icons: click to enlarge ─────
+    {
+      const box = document.getElementById("lightbox"), big = document.getElementById("lightbox-img");
+      const close = () => box.classList.remove("open");
+      document.querySelectorAll(".icon").forEach((b) => b.addEventListener("click", () => {
+        big.src = b.querySelector("img").src; box.classList.add("open");
+      }));
+      box.addEventListener("click", close);
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+    }
+
     // ───── phone menu ─────
     (function () {
       const nav = document.querySelector("nav"), mbtn = document.getElementById("menu-btn");
@@ -1071,6 +1145,7 @@
       let pokes = [], rage = 0, calmT, talkT;
       btn.addEventListener("click", () => {
         if (btn.classList.contains("flee")) return;
+        if (sleeping) { sleeping = false; btn.classList.remove("asleep"); wake(); return mascotEmote("question", "Hm? I wasn't sleeping.", "shake"); }
         const now = Date.now();
         pokes = pokes.filter((t) => now - t < 2500).concat(now);
         if (pokes.length >= 5) {
@@ -1122,6 +1197,8 @@
           : mascotEmote("dots", "Closed. For now."), 0)],
         ['nav a[href="#about"]', () => mascotEmote("sparkle", "The Nave. Mind the candles.")],
         ['nav a[href="#project"]', () => mascotEmote("star", "Behold the Altar, the great work.")],
+        ['nav a[href="#icons"]', () => mascotEmote("exclaim", "The Iconostasis. Do not touch the halos.")],
+        [".icon", () => mascotEmote("heart", pick(["A saint. Probably.", "Pray for her.", "Holy. Very holy."]))],
         ['nav a[href="#contacts"]', () => mascotEmote("heart", "Confession time? I'll wait outside.")],
         [".logo", () => mascotEmote("exclaim", "Back to the beginning.")],
         ["#about .card", (el) => { const c = CARD[el.querySelector("h3").firstChild.textContent.trim()]; if (c) mascotEmote(c[0], c[1]); }],
@@ -1139,7 +1216,7 @@
         ["h1", () => mascotEmote("question", "Yes, that's the name. Gothic, isn't it?")],
       ];
       document.addEventListener("click", (e) => {
-        if (e.target.closest("#mascot, .contact, a.btn")) return;
+        if (sleeping || e.target.closest("#mascot, .contact, a.btn")) return;
         for (const [sel, fn] of RULES) {
           const el = e.target.closest(sel);
           if (el) { fn(el); return; }
@@ -1147,10 +1224,43 @@
       });
 
       // idle: she dozes off; reaching the end: a blessing
-      let idleT;
-      const wake = () => { clearTimeout(idleT); idleT = setTimeout(() => mascotEmote("zzz", "Zzz... the line is quiet.", "shake"), 30000); };
+      let idleT, sleeping = false;
+      const root = document.documentElement;
+      const candles = () => [...document.querySelectorAll(".px-candle, #chandelier")];
+      const dozeOff = () => {
+        sleeping = true; btn.classList.add("asleep");
+        mascotEmote("zzz", "Zzz... the line is quiet.", "shake");
+        checkSeal();
+      };
+      const wake = () => { if (sleeping) return; clearTimeout(idleT); idleT = setTimeout(dozeOff, 15000); };
       ["pointerdown", "keydown", "scroll"].forEach((ev) => addEventListener(ev, wake, { passive: true }));
       wake();
+
+      // candles: click to snuff or relight; the Icons section opens once she sleeps and none burn
+      document.querySelectorAll(".px-candle").forEach((c) => {
+        c.removeAttribute("aria-hidden"); c.setAttribute("role", "button"); c.setAttribute("tabindex", "0");
+        c.setAttribute("aria-label", "Candle, press to snuff or relight");
+      });
+      const toggle = (c) => { c.classList.toggle("out"); checkSeal(); };
+      document.addEventListener("click", (e) => { const c = e.target.closest(".px-candle, #chandelier"); if (c) toggle(c); });
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        const c = e.target.closest && e.target.closest(".px-candle"); if (c) { e.preventDefault(); toggle(c); }
+      });
+      const open = (() => { try { return sessionStorage.getItem("icons") === "1"; } catch (e) { return false; } })();
+      if (open) root.classList.add("icons-open");
+      function checkSeal() {
+        if (root.classList.contains("icons-open") || !sleeping || candles().some((c) => !c.classList.contains("out"))) return;
+        root.classList.add("icons-open");
+        try { sessionStorage.setItem("icons", "1"); } catch (e) { /* private mode */ }
+        mascotSay("...Zzz... something stirred in the dark.", 4200);
+        setTimeout(() => document.getElementById("icons").scrollIntoView({ behavior: "smooth", block: "start" }), 900);
+      }
+      document.querySelector('#menu a[href="#icons"]').addEventListener("click", (e) => {
+        if (root.classList.contains("icons-open")) return;
+        e.preventDefault();
+        mascotSay(sleeping ? "Shh... she sleeps. Snuff the candles, one by one." : "Sealed. Let the little angel fall asleep, then put out every candle.", 4200);
+      });
       new IntersectionObserver((entries, obs) => {
         if (entries[0].isIntersecting) { mascotEmote("heart", "You read it all. Bless you."); obs.disconnect(); }
       }, { threshold: 1 }).observe(document.querySelector("footer"));
